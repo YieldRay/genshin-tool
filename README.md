@@ -74,7 +74,7 @@ action:{
 $ npm install
 $ node server
 # 设置默认cookie
-$ node server "米游社cookie"`
+$ node server "米游社cookie"
 
 ```
 

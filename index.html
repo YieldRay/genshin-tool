@@ -408,11 +408,11 @@
                         <h3 class="d-inline">深境螺旋战绩</h3>
                         <span class="label text-tiny">
                             统计周期{{new Date(data.start_time*1000).toLocaleDateString()}} - {{new
-                            Date(data.start_time*1000).toLocaleDateString()}}
+                            Date(data.end_time*1000).toLocaleDateString()}}
                         </span>
                         <div class="panel m-2 bg-secondary">
                             <div class="panel-header">
-                                <div class="panel-title text-center text-warning">挑战回顾</div>
+                                <div class="panel-title text-center">挑战回顾</div>
                             </div>
                             <div class="panel-nav text-center text-light bg-dark">
                                 最深抵达 {{data.max_floor}} 战斗次数{{data.total_battle_times}} 挑战成功次数{{data.total_win_times}}
@@ -511,7 +511,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <summary>展开</summary>
+                                    <summary style="padding-left: 4em">展开</summary>
                                 </details>
                             </div>
                         </div>
@@ -681,7 +681,7 @@
                     }
                 },
                 async checkin() {
-                    this.action = "";
+                    //this.action = "";
                     this.fetchData(this.checkin_server);
                 },
                 getHistory() {
