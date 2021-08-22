@@ -523,6 +523,20 @@
                         </div>
                 </template>
                 <!--spiral-abyss-->
+                <!--sign-reward-->
+                <template v-else-if="action==='signReward'">
+                    <h3>{{data.month}}月签到奖励</h3>
+                    <div class="columns text-center">
+                        <figure v-for="(award,i) in data.awards" class="figure s-rounded column col-xs-3 col-2 card"
+                            style="padding: 0;">
+                            <img class="img-responsive" :src="award.icon">
+                            <span class="text-tiny ">{{award.name}} ×{{award.cnt}}</span>
+                            <figcaption class="figure-caption bg-gray">第{{++i}}天</figcaption>
+                        </figure>
+                    </div>
+                </template>
+                <!--sign-reward-->
+                <!--no-handler-->
                 <div v-else>
                     <div class="card-title h5">Response</div>
                     <div class="card-subtitle text-gray">返回信息</div>
@@ -533,6 +547,7 @@
                     </div>
                     <div class="card-footer"></div>
                 </div>
+                <!--no-handler-->
             </div>
         </div>
         <!--column off-->
@@ -642,7 +657,7 @@
         },
         methods: {
             async fetchData(url) {
-                iToast.loading("请稍等...");
+                iToast.loading("请求中，请稍后");
                 try {
                     let resp = await fetch(url, {
                         method: "POST",
@@ -651,7 +666,7 @@
                     if (!resp.ok) throw new Error("api服务器异常");
                     resp = await resp.json();
                     if (resp.success) {
-                        iToast.success("完毕！");
+                        iToast.success("请求成功");
                         this.data = resp.data;
                         return resp.data;
                     } else {
@@ -661,9 +676,12 @@
                     iToast.fail({ message: e.message, duration: 3000 });
                     if (e.message === "Failed to fetch")
                         iToast.fail({ message: "请检查api服务器是否填写正确", duration: 5000, position: "top" });
+                    else if (e.message === "Please login")
+                        iToast.fail({ message: "cookie填写错误或失效", duration: 5000, position: "top" });
                 }
             },
             async checkin() {
+                this.action = "";
                 this.fetchData(this.checkin_server);
             },
             getHistory() {

@@ -2,6 +2,9 @@ const http = require("http");
 const func = require("./api/checkin");
 // 配置本地cookie
 // process.env.mys_cookie =
+
+process.env.acao = "*";
+if (process.argv.slice(2)[0]) process.env.mys_cookie = process.argv.slice(2)[0];
 const port = 80;
 const server = http.createServer(func);
 server.listen(port, () => {
