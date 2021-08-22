@@ -1,6 +1,7 @@
 # genshin-tool
 
 ## _请务必保护好自己的 cookie，不要在不受信任的地址输入自己的 cookie!_
+
 预览：<https://genshin-tool.vercel.app/>
 
 ## 获取米游社 cookie
@@ -121,7 +122,7 @@ fetch(url, {
     method: "POST",
     body: JSON.stringify(data),
 })
-    .then((res) => res.json())
-    .catch((error) => console.error("Error:", error))
-    .then((response) => console.log("Success:", response));
+    .then(res => res.json())
+    .catch(error => console.error("Error:", error))
+    .then(response => console.log("Success:", response));
 ```

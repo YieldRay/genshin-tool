@@ -2,8 +2,7 @@ const qs = require("qs");
 const thrower = require("../src/thrower");
 
 module.exports = async (req, res) => {
-    if (process.env.acao)
-        res.setHeader("Access-Control-Allow-Origin", process.env.acao);
+    if (process.env.acao) res.setHeader("Access-Control-Allow-Origin", process.env.acao);
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     const data = { time: new Date().getTime() };
     let query;
@@ -18,7 +17,7 @@ module.exports = async (req, res) => {
             break;
         case "POST":
             let post = "";
-            req.on("data", (chunk) => (post += chunk));
+            req.on("data", chunk => (post += chunk));
             req.on("end", () => {
                 query = JSON.parse(post);
                 writeResp();
@@ -34,8 +33,7 @@ module.exports = async (req, res) => {
         // 转发请求
 
         // 环境变量，如vercel内设置了则使用，但请求中的cookie优先
-        if (!query.cookie && process.env.mys_cookie)
-            query.cookie = process.env.mys_cookie;
+        if (!query.cookie && process.env.mys_cookie) query.cookie = process.env.mys_cookie;
 
         const ip =
             req.headers["x-forwarded-for"] ||
@@ -44,20 +42,9 @@ module.exports = async (req, res) => {
             req.connection.socket.remoteAddress;
 
         console.log(new Date(), ip, req.method, query);
-        const {
-            action = null,
-            cookie = null,
-            self_uid,
-            target_uid,
-            region = "cn_gf01",
-        } = query;
+        const { action = null, cookie = null, self_uid, target_uid, region = "cn_gf01" } = query;
 
-        const api = require("../src/main")(
-            cookie,
-            self_uid,
-            target_uid,
-            region
-        );
+        const api = require("../src/main")(cookie, self_uid, target_uid, region);
 
         try {
             if (action !== "signReward") thrower([cookie, "cookie"]);

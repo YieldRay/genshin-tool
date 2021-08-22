@@ -1,12 +1,9 @@
 // 实现多cookie
-const allCookie = process.argv.slice(2)[0]
-    ? process.argv.slice(2)[0]
-    : process.env.mys_cookie;
+const allCookie = process.argv.slice(2)[0] ? process.argv.slice(2)[0] : process.env.mys_cookie;
 
 async function checkin(cookie) {
     try {
-        if (cookie.startsWith('"') && cookie.endsWith('"'))
-            cookie = cookie.replace('"', "");
+        if (cookie.startsWith('"') && cookie.endsWith('"')) cookie = cookie.replace('"', "");
         const res = await require("./src/sign")(cookie);
         console.log(res);
         return res;

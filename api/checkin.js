@@ -1,6 +1,5 @@
 module.exports = async (req, res) => {
-    if (process.env.acao)
-        res.setHeader("Access-Control-Allow-Origin", process.env.acao);
+    if (process.env.acao) res.setHeader("Access-Control-Allow-Origin", process.env.acao);
     res.setHeader("Content-Type", "text/plain; charset=utf-8");
     switch (
         req.method // 判断请求类型，并统一得到query，然后调用writeResp
@@ -13,7 +12,7 @@ module.exports = async (req, res) => {
             break;
         case "POST":
             let post = "";
-            req.on("data", (chunk) => (post += chunk));
+            req.on("data", chunk => (post += chunk));
             req.on("end", () => {
                 query = JSON.parse(post);
                 writeResp();
@@ -29,8 +28,7 @@ module.exports = async (req, res) => {
         // 转发请求
 
         // 环境变量，如vercel内设置了则使用，但请求中的cookie优先
-        if (!query.cookie && process.env.mys_cookie)
-            query.cookie = process.env.mys_cookie;
+        if (!query.cookie && process.env.mys_cookie) query.cookie = process.env.mys_cookie;
 
         const ip =
             req.headers["x-forwarded-for"] ||

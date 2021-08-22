@@ -1,5 +1,5 @@
 module.exports = function (origin) {
-    const rplc = (e) =>
+    const rplc = e =>
         e
             .replace(/Anemo/g, "风")
             .replace(/Geo/g, "岩")

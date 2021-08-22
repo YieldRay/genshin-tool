@@ -4,13 +4,11 @@ module.exports = function (cookie) {
         try {
             let api;
             if (cookie === undefined) throw new Error("cookie is required");
-            if (typeof cookie !== "string")
-                throw new Error("cookie must be string");
+            if (typeof cookie !== "string") throw new Error("cookie must be string");
             cookie = cookie.trim();
             api = require("./main")(cookie);
             const selfInfo = await api.selfInfo();
-            const { region, region_name, game_uid, nickname, level } =
-                selfInfo.list[0];
+            const { region, region_name, game_uid, nickname, level } = selfInfo.list[0];
             api = require("./main")(cookie, game_uid, null, region);
             const signInfo = await api.signInfo();
             const { is_sign, total_sign_day, today } = signInfo;

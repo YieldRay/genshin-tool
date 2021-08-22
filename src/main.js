@@ -1,26 +1,18 @@
 const fetch = require("node-fetch");
 const thrower = require("./thrower");
 
-module.exports = function (
-    cookie = null,
-    self_uid = null,
-    target_uid = null,
-    region = "cn_gf01"
-) {
+module.exports = function (cookie = null, self_uid = null, target_uid = null, region = "cn_gf01") {
     //region:[cn_gf01,cn_qd01]
     const act_id = "e202009291139501";
 
     // debug
-    if (cookie && typeof cookie !== "string")
-        throw new Error("cookie must be string");
+    if (cookie && typeof cookie !== "string") throw new Error("cookie must be string");
     if (typeof region !== "string") throw new Error("region must be string");
-    if (self_uid && isNaN(Number(self_uid)))
-        throw new Error("self_uid  must be able to be resolved to a number");
-    if (self_uid && isNaN(Number(target_uid)))
-        throw new Error("target_uid  must be able to be resolved to a number");
+    if (self_uid && isNaN(Number(self_uid))) throw new Error("self_uid  must be able to be resolved to a number");
+    if (self_uid && isNaN(Number(target_uid))) throw new Error("target_uid  must be able to be resolved to a number");
 
     // main
-    async function req(url, isPOST = false, cb = (e) => e) {
+    async function req(url, isPOST = false, cb = e => e) {
         try {
             const resp = await fetch(
                 url,
@@ -40,14 +32,11 @@ module.exports = function (
                         ds: require("./ds")(),
                     },
                     method: isPOST ? "POST" : "GET",
-                    body: isPOST
-                        ? JSON.stringify({ act_id, uid: self_uid, region })
-                        : null,
-                })
+                    body: isPOST ? JSON.stringify({ act_id, uid: self_uid, region }) : null,
+                }),
             );
             const result = await resp.json();
-            if (result.data === null && result.message)
-                throw new Error(result.message);
+            if (result.data === null && result.message) throw new Error(result.message);
             if (result.retcode !== 0) throw new Error(JSON.stringify(result));
             return result.data;
         } catch (e) {
@@ -55,7 +44,7 @@ module.exports = function (
         }
     }
 
-    req.get = async (url) => {
+    req.get = async url => {
         try {
             return await req(url, false);
         } catch (e) {
@@ -63,7 +52,7 @@ module.exports = function (
         }
     };
 
-    req.post = async (url) => {
+    req.post = async url => {
         try {
             return await req(url, true);
         } catch (e) {
@@ -74,16 +63,11 @@ module.exports = function (
     // 签到
     const selfSign = async () => {
         thrower([self_uid, "self_uid"]);
-        return await req.post(
-            "https://api-takumi.mihoyo.com/event/bbs_sign_reward/sign"
-        );
+        return await req.post("https://api-takumi.mihoyo.com/event/bbs_sign_reward/sign");
     };
 
     // 获取签到奖励信息
-    const signReward = async () =>
-        await req.get(
-            `https://api-takumi.mihoyo.com/event/bbs_sign_reward/home?act_id=${act_id}`
-        );
+    const signReward = async () => await req.get(`https://api-takumi.mihoyo.com/event/bbs_sign_reward/home?act_id=${act_id}`);
 
     // 获取自己的签到天数
     // {
@@ -96,9 +80,7 @@ module.exports = function (
     // }
     const signInfo = async () => {
         thrower([self_uid, "self_uid"]);
-        return await req.get(
-            `https://api-takumi.mihoyo.com/event/bbs_sign_reward/info?region=${region}&act_id=${act_id}&uid=${self_uid}`
-        );
+        return await req.get(`https://api-takumi.mihoyo.com/event/bbs_sign_reward/info?region=${region}&act_id=${act_id}&uid=${self_uid}`);
     };
 
     // 获取自己的账号信息
@@ -117,24 +99,20 @@ module.exports = function (
     //     ]
     // }
     const selfInfo = async () => {
-        return await req.get(
-            `https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz=hk4e_cn`
-        );
+        return await req.get(`https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz=hk4e_cn`);
     };
 
     // 获取指定玩家游戏的进度信息
     const gameInfo = async () => {
         thrower([target_uid, "target_uid"]);
-        return await req.get(
-            `https://api-takumi.mihoyo.com/game_record/genshin/api/index?role_id=${target_uid}&server=${region}`
-        );
+        return await req.get(`https://api-takumi.mihoyo.com/game_record/genshin/api/index?role_id=${target_uid}&server=${region}`);
     };
 
     // 本期深渊
     const spiralAbyss1 = async () => {
         thrower([target_uid, "target_uid"]);
         return await req.get(
-            `https://api-takumi.mihoyo.com/game_record/genshin/api/spiralAbyss?schedule_type=1&server=${region}&role_id=${target_uid}`
+            `https://api-takumi.mihoyo.com/game_record/genshin/api/spiralAbyss?schedule_type=1&server=${region}&role_id=${target_uid}`,
         );
     };
 
@@ -142,7 +120,7 @@ module.exports = function (
     const spiralAbyss2 = async () => {
         thrower([target_uid, "target_uid"]);
         return await req.get(
-            `https://api-takumi.mihoyo.com/game_record/genshin/api/spiralAbyss?schedule_type=2&server=${region}&role_id=${target_uid}`
+            `https://api-takumi.mihoyo.com/game_record/genshin/api/spiralAbyss?schedule_type=2&server=${region}&role_id=${target_uid}`,
         );
     };
 
@@ -151,14 +129,14 @@ module.exports = function (
         thrower([target_uid, "target_uid"]);
         const query = await gameInfo();
         const char_ids = [];
-        query.avatars.forEach((e) => char_ids.push(e.id));
+        query.avatars.forEach(e => char_ids.push(e.id));
         return await req(
             `https://api-takumi.mihoyo.com/game_record/genshin/api/character?server=${region}&role_id=${target_uid}`,
             true,
-            (e) => {
+            e => {
                 e.body = `{"character_ids":${JSON.stringify(char_ids)}}`;
                 return e;
-            }
+            },
         );
     };
 
