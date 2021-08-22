@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net/" />
+    <title>genshin-tool</title>
+    <link href="https://cdn.jsdelivr.net/gh/picturepan2/spectre@0.5.9/dist/spectre.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/gh/picturepan2/spectre@0.5.9/dist/spectre-exp.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/gh/picturepan2/icons.css/dist/icons.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/iu-toast@1.1.2/dist/iu-toast.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/iu-toast@1.1.2/dist/iu-toast.min.js"></script>
+    <style>
+        * {
+            word-break: break-all;
+        }
+
+        .inline-forms * {
+            display: inline;
+            max-width: 55%;
+        }
+
+        .iu-toast {
+            z-index: 999;
+        }
+    </style>
+</head>
+
+<body class="container grid-lg" id="app">
+    <header class="navbar">
+        <section class="navbar-section">
+            <a href="https://github.com/Crazy-White/genshin-tool#readme" class="btn btn-link">Docs</a>
+            <a href="https://github.com/Crazy-White/genshin-tool" class="btn btn-link">GitHub</a>
+        </section>
+        <section class="navbar-center">
+            <i class="icon icon-search"></i>
+        </section>
+        <section class="navbar-section">
+            <a onclick="$server.classList.add('active')" class="btn btn-link">Server</a>
+            <a onclick="$cookie.classList.add('active')" class="btn btn-link">Cookie</a>
+        </section>
+    </header>
+    <!--part1-->
+    <div class="empty">
+        <div class="empty-icon">
+            <i class="icon icon-people"></i>
+        </div>
+        <p class="empty-title h5">genshin-tool</p>
+        <p class="empty-subtitle">
+            <small>
+                {{cookie?"当前cookie为：\""+cookie+"\"":"欲使用api，请先填写cookie"}}
+            </small>
+        </p>
+
+        <p>演示界面无需cookie也可使用</p>
+        <div class="empty-action">
+            <button onclick="$cookie.classList.add('active')" class="btn btn-primary">
+                设置cookie
+            </button>
+        </div>
+    </div>
+    <!--part2-->
+    <div class="columns">
+        <!--column on-->
+        <ul class="menu column col-4 col-xs-12">
+            <li class="divider" data-content="签到"></li>
+            <li class="menu-item">
+                <a @click="doAction('selfInfo')">
+                    <i class="icon icon-person"></i> 查询账号信息
+                </a>
+            </li>
+            <li class="menu-item">
+                <a @click="doAction('signReward')">
+                    <i class="icon icon-flag"></i> 签到奖励
+                </a>
+            </li>
+            <li class="menu-item">
+                <a @click="checkin">
+                    <i class="icon icon-check"></i> 执行签到
+                </a>
+            </li>
+
+            <li class="divider" data-content="查询"></li>
+            <div class="form-group inline-forms">
+                <input v-model="target_uid" class="form-input" type="number" placeholder="欲查询的uid" min="100000001"
+                    max="999999999" maxlength="9" />
+                <select style="width: 25%" v-model="region" class="form-select">
+                    <option value="cn_gf01" default>官服</option>
+                    <option value="cn_qd01">渠道服</option>
+                </select>&nbsp;
+                <button onclick="localStorage.setItem('history','[]');app.history=[];iToast.success('已删除历史记录')"
+                    class="btn btn-action s-circle btn-primary">
+                    ╳
+                </button>
+            </div>
+            历史记录：{{history}}
+            <li class="menu-item">
+                <a @click="doAction('gameInfo')">
+                    <i class="icon icon-flag"></i> 游戏信息
+                </a>
+            </li>
+            <li class="menu-item">
+                <a @click="doAction('charDetail')">
+                    <i class="icon icon-person"></i> 角色信息
+                </a>
+            </li>
+            <li class="menu-item">
+                <a @click="doAction('spiralAbyss1')">
+                    <i class="icon icon-link"></i> 本期深渊
+                </a>
+            </li>
+            <li class="menu-item">
+                <a @click="doAction('spiralAbyss2')">
+                    <i class="icon icon-link"></i> 上期深渊
+                </a>
+            </li>
+        </ul>
+        <!--part3-->
+        <div class="card column col-8 col-xs-12">
+            <div class="card-header">
+                <!--game-info-->
+                <template v-if="action==='gameInfo'&&data.stats">
+                    <h3>数据总览</h3>
+                    <div class="columns">
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            活跃天数<br />{{data.stats.active_day_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            成就达成数<br />{{data.stats.achievement_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            获得角色数<br />{{data.stats.avatar_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            解锁传送点<br />{{data.stats.way_point_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            风神瞳<br />{{data.stats.anemoculus_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            岩神瞳<br />{{data.stats.geoculus_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            雷神瞳<br />{{data.stats.electroculus_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            解锁秘境<br />{{data.stats.domain_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            深境螺旋<br />{{data.stats.spiral_abyss}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            华丽宝箱数<br />{{data.stats.luxurious_chest_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            珍贵宝箱数<br />{{data.stats.precious_chest_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            精致宝箱数<br />{{data.stats.exquisite_chest_number}}
+                        </div>
+                        <div class="
+                                    d-inline-block
+                                    column
+                                    col-2 col-xs-3
+                                    card
+                                    text-center
+                                ">
+                            普通宝箱数<br />{{data.stats.common_chest_number}}
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <h3>尘歌壶</h3>
+                    <ul class="columns" v-if="data.homes">
+                        <li v-for="home in data.homes" :key="home.name" class="
+                                    d-inline-block
+                                    card
+                                    column
+                                    col-4 col-xs-12
+                                    p-centered
+                                    text-center
+                                ">
+                            <div class="card-image">
+                                <img :src="home.icon" class="img-responsive" />
+                            </div>
+                            <div class="card-body" style="display:flex;flex-direction:row;align-items:center;">
+                                <img class="d-inline-block" style="width: 2em" :src="home.comfort_level_icon" />
+                                <span class="text-left d-inline-block"
+                                    style="font-size: 2m;">{{home.comfort_level_name}}&nbsp;&nbsp;</span>
+                                <small class="text-right d-inline-block" style="float: right">{{home.name}}</small>
+                            </div>
+                            <div class="divider" style="clear: both"></div>
+                            <div class="columns">
+                                <div class="column col-3 text-tiny">
+                                    {{home.level}}<br />信任等阶
+                                </div>
+                                <div class="column col-3 text-tiny">
+                                    {{home.comfort_num}}<br />最高洞天仙力
+                                </div>
+                                <div class="column col-3 text-tiny">
+                                    {{home.item_num}}<br />获得摆件数
+                                </div>
+                                <div class="column col-3 text-tiny">
+                                    {{home.comfort_num}}<br />历史访客数
+                                </div>
+                            </div>
+
+                        </li>
+                    </ul>
+                    <div class="divider"></div>
+
+                    <h3>世界探索</h3>
+                    <ul class="columns" v-if="data.world_explorations">
+                        <li v-for="world in data.world_explorations" :key="world.id"
+                            style="background-color: DimGray; color: #fff" class="
+                                    d-inline-block
+                                    card
+                                    column
+                                    col-6 col-xs-6
+                                    p-centered
+                                    text-center
+                                ">
+                            <img :src="world.icon" style="float: left; width: 40%" />
+                            <div style="display:flex;flex-direction:column;align-items:center;">
+                                <strong class="d-inline-block">{{world.name}}</strong>
+                                <span
+                                    class="d-inline-block">探索度：{{(world.exploration_percentage*0.1).toFixed(1)}}%</span>
+                                <progress class="progress d-inline-block" :value="world.exploration_percentage*0.1"
+                                    max="100"></progress>
+                                <span class="d-inline-block">声望等级：{{world.level}}</span>
+                                <small class="d-inline-block"
+                                    v-if="world.offerings[0]">{{world.offerings[0].name}}等级：{{world.offerings[0].level}}</small>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="divider"></div>
+                    <details open>
+                        <summary>
+                            <h3 style="display: inline">角色</h3>
+                        </summary>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>角色</th>
+                                    <th>元素</th>
+                                    <th>稀有度</th>
+                                    <th>命座</th>
+                                    <th>好感度</th>
+                                </tr>
+                            </thead>
+                            <tbody v-for="char in data.avatars" :key="char.id">
+                                <tr>
+                                    <td style="display:flex;flex-direction:row;align-items:center;">
+                                        <img :src="char.image" class="d-inline-block"
+                                            style="width: 2em;height: 2em;" /><span
+                                            class="d-inline-block">{{char.name}}</span>
+                                    </td>
+                                    <td>{{char.element}}</td>
+                                    <td>{{'★'.repeat(char.rarity)}}</td>
+                                    <td>
+                                        {{char.actived_constellation_num}}
+                                    </td>
+                                    <td>{{char.fetter}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </details>
+                </template>
+                <!--game-info-->
+
+                <!--char-detail-->
+                <template v-else-if="action==='charDetail'&&data.avatars">
+                    <strong>{{(action==='charDetail')?'时装暂不支持':''}}</strong>
+                    <div v-for="char in data.avatars" :key="char.id" style="width: 100%">
+                        <img :src="char.image" style="float: left; width: 50%" />
+                        <h3>
+                            {{char.name}}
+                            <small class="label">LV{{char.level}}
+                                {{char.actived_constellation_num}}命
+                                {{char.element}}</small>
+                        </h3>
+                        <small>好感度等级：{{char.fetter}}</small><br />
+                        <!--武器-->
+                        <div class="popover popover-bottom">
+                            <button class="btn btn-primary btn-sm">
+                                {{char.weapon.name}}
+                                LV{{char.weapon.level}}&nbsp;&nbsp;<i class="icon icon-arrow-down"></i>
+                            </button>
+                            <div class="popover-container">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <img :src="char.weapon.icon" style="width: 20%" />
+
+                                        <small style="float: right">精炼{{char.weapon.promote_level-1}}阶
+                                            <br />{{char.weapon.type_name}}<br />{{'★'.repeat(char.weapon.rarity)}}</small>
+                                    </div>
+                                    <div class="card-footer">
+                                        {{char.weapon.desc}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br /><br />
+                        <!--圣遗物-->
+                        <div v-for="r in char.reliquaries" :key="r.id" class="popover popover-bottom">
+                            <button class="btn btn-primary btn-sm">
+                                {{r.name}} +{{r.level}}&nbsp;&nbsp;<i class="icon icon-arrow-down"></i>
+                            </button>
+                            <div class="popover-container">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <img :src="r.icon" style="width: 20%" />
+
+                                        <small
+                                            style="float: right">{{r.set.name}}<br />{{r.pos_name}}<br />{{'★'.repeat(r.rarity)}}</small>
+                                    </div>
+                                    <div class="card-footer">
+                                        {{r.set.name}}：<br />
+                                        <i v-for="a in r.set.affixes" :key="a.activation_number">
+                                            {{a.activation_number}}件套：{{a.effect}}
+                                        </i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br /><br />
+                        <!--命座-->
+                        <div v-for="c in char.constellations" class="popover popover-top">
+                            <button class="btn btn-primary btn-sm" :class="{ disabled: !c.is_actived }">
+                                {{c.pos}}&nbsp;<i class="icon icon-arrow-up"></i>
+                            </button>
+                            <div class="popover-container">
+                                <div class="card" style="
+                                            background-color: DimGray;
+                                            color: #fff;
+                                        ">
+                                    <div class="card-body">
+                                        <img :src="c.icon" style="width: 20%" />
+
+                                        <span class="text-large" style="float: right">{{c.name}}</span>
+                                        <div class="card-footer text-small" v-html="c.effect.replace(/\\n/g,'<br />')"
+                                            style="float: right"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--结束-->
+                        <div class="divider" style="clear: both"></div>
+                    </div>
+                </template>
+                <!--char-detail-->
+                <!--spiral-abyss-->
+                <template v-else-if="action==='spiralAbyss1'||action==='spiralAbyss2'">
+                    <h3 class="d-inline">深境螺旋战绩</h3>
+                    <span class="label text-tiny">统计周期{{new Date(data.start_time*1000).toLocaleDateString()}} -
+                        {{new Date(data.start_time*1000).toLocaleDateString()}}</span>
+                    <div class="panel m-2 bg-secondary">
+                        <div class="panel-header">
+                            <div class="panel-title text-center text-warning">挑战回顾</div>
+                        </div>
+                        <div class="panel-nav text-center text-light bg-dark">
+                            最深抵达 {{data.max_floor}} 战斗次数{{data.total_battle_times}} 挑战成功次数{{data.total_win_times}}
+                            ⚛{{data.total_star}}
+                        </div>
+                        <div class="panel-body" style="height:400px">
+                            <span class="text-warning">出战次数</span>
+                            <div class="columns">
+                                <figure v-for="char in data.reveal_rank" class="figure s-rounded column col-2 card"
+                                    :style="{background:(char.rarity===5)?'#ce8d55':'#9274bd',padding:'0'}">
+                                    <img class="img-responsive" :src="char.avatar_icon">
+                                    <figcaption class="figure-caption text-center bg-gray">{{char.value}}次</figcaption>
+                                </figure>
+                            </div>
+                            <span class="text-warning d-block">战斗数据榜</span>
+                            <small>击破数</small>
+                            <div class="columns">
+                                <figure v-for="char in data.defeat_rank" class="figure s-rounded column col-2 card"
+                                    :style="{background:(char.rarity===5)?'#ce8d55':'#9274bd',padding:'0'}">
+                                    <img class="img-responsive" :src="char.avatar_icon">
+                                    <figcaption class="figure-caption text-center bg-gray">{{char.value}}</figcaption>
+                                </figure>
+                            </div>
+                            <small>承受伤害</small>
+                            <div class="columns">
+                                <figure v-for="char in data.take_damage_rank" class="figure s-rounded column col-2 card"
+                                    :style="{background:(char.rarity===5)?'#ce8d55':'#9274bd',padding:'0'}">
+                                    <img class="img-responsive" :src="char.avatar_icon">
+                                    <figcaption class="figure-caption text-center bg-gray">{{char.value}}</figcaption>
+                                </figure>
+                            </div>
+                            <small>元素战技释放次数</small>
+                            <div class="columns">
+                                <figure v-for="char in data.normal_skill_rank"
+                                    class="figure s-rounded column col-2 card"
+                                    :style="{background:(char.rarity===5)?'#ce8d55':'#9274bd',padding:'0'}">
+                                    <img class="img-responsive" :src="char.avatar_icon">
+                                    <figcaption class="figure-caption text-center bg-gray">{{char.value}}</figcaption>
+                                </figure>
+                            </div>
+                            <small>元素爆发释放次数</small>
+                            <div class="columns">
+                                <figure v-for="char in data.energy_skill_rank"
+                                    class="figure s-rounded column col-2 card"
+                                    :style="{background:(char.rarity===5)?'#ce8d55':'#9274bd',padding:'0'}">
+                                    <img class="img-responsive" :src="char.avatar_icon">
+                                    <figcaption class="figure-caption text-center bg-gray">{{char.value}}</figcaption>
+                                </figure>
+                            </div>
+                            <small>最强一击</small>
+                            <img :src="data.damage_rank[0].avatar_icon" style="width: 10%;"
+                                class="bg-gray s-circle">{{data.damage_rank[0].value}}
+                        </div>
+
+                        <!--挑战队伍-->
+                        <div v-for="floor in data.floors" class="panel m-2">
+                            <div class="panel-header">
+                                <span class="bg-dark text-light p-2 s-circle">
+                                    {{floor.index.toString().padStart(2,'0')}}
+                                </span>
+                                <span>&nbsp;&nbsp;&nbsp;深境螺旋第{{floor.index}}层</span>
+                                <span class="float-right">⚛ {{floor.star}}/{{floor.max_star}}</span>
+                            </div>
+                            <details close>
+                                <div class="panel-body">
+                                    <div v-for="level in floor.levels">
+                                        第{{level.index}}间 <span class="float-right">⚛
+                                            {{level.star}}/{{level.max_star}}</span>
+                                        <div v-for="(battle,i) in level.battles">
+                                            <small><template v-if="i===0">上半</template><template
+                                                    v-if="i===1">下半</template>
+                                                {{new Date(battle.timestamp*1000).toLocaleString()}}</small>
+                                            <div class="columns">
+                                                <figure v-for="char in battle.avatars"
+                                                    class="figure s-rounded column col-2 card"
+                                                    :style="{background:(char.rarity===5)?'#ce8d55':'#9274bd',padding:'0'}">
+                                                    <img class="img-responsive" :src="char.icon">
+                                                    <figcaption class="figure-caption text-center bg-gray">
+                                                        LV{{char.level}}
+                                                    </figcaption>
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <summary>
+                                    展开
+                                </summary>
+                            </details>
+                        </div>
+                </template>
+                <!--spiral-abyss-->
+                <div v-else>
+                    <div class="card-title h5">Response</div>
+                    <div class="card-subtitle text-gray">返回信息</div>
+                    <div class="card-body">
+                        <p style="white-space: pre-wrap">
+                            {{JSON.stringify(data,null,4)}}
+                        </p>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+        </div>
+        <!--column off-->
+    </div>
+
+    <!--设置服务器start-->
+    <div class="modal" id="$server">
+        <a onclick="$server.classList.remove('active')" class="modal-overlay" aria-label="Close"></a>
+        <div class="modal-container">
+            <div class="modal-header">
+                <a onclick="$server.classList.remove('active')" class="btn btn-clear float-right"
+                    aria-label="Close"></a>
+                <div class="modal-title h5">设置服务器</div>
+            </div>
+            <div class="modal-body">
+                <div class="content">
+                    <div class="form-group">
+                        <label class="form-label" for="input-server">当前服务器
+                            <a :href="server">{{server}}</a></label>
+                        <textarea v-model="server" class="form-input" id="input-server" placeholder="Server URL"
+                            rows="1"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="input-server">当前签到服务器
+                            <a :href="server">{{checkin_server}}</a></label>
+                        <textarea v-model="checkin_server" class="form-input" id="input-server"
+                            placeholder="Check In: Server URL" rows="1"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button @click="saveServer" class="btn btn-primary">
+                    保存</button>&nbsp;
+                <button onclick="$server.classList.remove('active')" class="btn btn-primary">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--设置服务器end-->
+
+    <!--设置cookie start-->
+    <div class="modal" id="$cookie">
+        <a onclick="$cookie.classList.remove('active')" class="modal-overlay" aria-label="Close"></a>
+        <div class="modal-container">
+            <div class="modal-header">
+                <a onclick="$cookie.classList.remove('active')" class="btn btn-clear float-right"
+                    aria-label="Close"></a>
+                <div class="modal-title h5">设置cookie</div>
+            </div>
+            <div class="modal-body">
+                <div class="content">
+                    <!-- <p>当前cookie: {{cookie?cookie:'未设置'}}</p> -->
+                    <div class="form-group">
+                        <label class="form-label" for="input-cookie"></label>
+
+                        <textarea v-model="cookie" class="form-input" id="input-cookie" placeholder="米游社 cookie"
+                            rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button @click="saveCookie" class="btn btn-primary">
+                    保存</button>&nbsp;
+                <button onclick="$cookie.classList.remove('active')" class="btn btn-primary">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--设置cookie end-->
+</body>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                server: "./api/",
+                checkin_server: "./api/checkin",
+                cookie: "",
+                self_uid: "",
+                target_uid: "",
+                region: "cn_gf01",
+                action: "",
+                data: {},
+                history: [],
+            };
+        },
+        computed: {
+            jsonBody: {
+                get() {
+                    return {
+                        cookie: this.cookie,
+                        self_uid: this.self_uid,
+                        target_uid: this.target_uid,
+                        region: this.region,
+                        action: this.action,
+                    };
+                },
+                set(obj) {
+                    this.action = obj.action;
+                    this.cookie = obj.cookie;
+                    this.self_uid = obj.self_uid;
+                    this.target_uid = obj.target_uid;
+                    this.region = obj.region;
+                },
+            },
+        },
+        methods: {
+            async fetchData(url) {
+                iToast.loading("请稍等...");
+                try {
+                    let resp = await fetch(url, {
+                        method: "POST",
+                        body: JSON.stringify(this.jsonBody),
+                    });
+                    if (!resp.ok) throw new Error("api服务器异常");
+                    resp = await resp.json();
+                    if (resp.success) {
+                        iToast.success("完毕！");
+                        this.data = resp.data;
+                        return resp.data;
+                    } else {
+                        throw new Error(resp.msg);
+                    }
+                } catch (e) {
+                    iToast.fail({ message: e.message, duration: 3000 });
+                    if (e.message === "Failed to fetch")
+                        iToast.fail({ message: "请检查api服务器是否填写正确", duration: 5000, position: "top" });
+                }
+            },
+            async checkin() {
+                this.fetchData(this.checkin_server);
+            },
+            getHistory() {
+                return JSON.parse(localStorage.getItem("history"));
+            },
+            addHistory(uid) {
+                this.history = this.getHistory();
+                let history = localStorage.getItem("history");
+                if (history) {
+                    try {
+                        history = JSON.parse(history);
+                    } catch (e) {
+                        localStorage.setItem("history", "[]");
+                    }
+                } else {
+                    localStorage.setItem("history", "[]");
+                }
+                history = JSON.parse(localStorage.getItem("history"));
+                if (history.includes(uid) || uid === "") {
+                    return false;
+                } else {
+                    history.push(uid);
+                    history = JSON.stringify(history);
+                    localStorage.setItem("history", history);
+                    this.history = this.getHistory();
+                    return true;
+                }
+            },
+            doAction(action) {
+                if (
+                    [
+                        "gameInfo",
+                        "charDetail",
+                        "spiralAbyss1",
+                        "spiralAbyss2",
+                    ].includes(action)
+                ) {
+                    const len = String(this.target_uid).length;
+                    if (len !== 9) {
+                        iToast.fail(`uid是9位数\n输入了${len}位数`);
+                        return;
+                    }
+                }
+                this.addHistory(this.target_uid); //添加历史记录
+                this.data = {};
+                this.action = action;
+                this.fetchData(this.server);
+            },
+            saveServer() {
+                localStorage.setItem("server", this.server);
+                localStorage.setItem("checkin_server", this.checkin_server);
+                iToast.success("保存成功");
+            },
+            saveCookie(event) {
+                localStorage.setItem("cookie", this.cookie);
+                iToast.success("保存成功");
+            },
+        },
+        mounted() {
+            iToast.allowMultiToast();
+            if (localStorage.getItem("server"))
+                this.server = localStorage.getItem("server");
+            if (localStorage.getItem("checkin_server"))
+                this.checkin_server =
+                    localStorage.getItem("checkin_server");
+            if (localStorage.getItem("cookie"))
+                this.cookie = localStorage.getItem("cookie");
+            if (localStorage.getItem("history"))
+                this.history = this.getHistory();
+        },
+    }).mount("#app");
+</script>
+
+</html>
