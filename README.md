@@ -1,6 +1,6 @@
 # genshin-tool
 
-## _请务必保护好自己的 cookie，不要在不受信任的地址输入自己的 cookie!_
+## _请务必保护好自己的 cookie，不要在不受信任的地址输入自己的 cookie。泄露 cookie 可能使你的账号遭到风险！_
 
 预览：<https://genshin-tool.vercel.app/>
 
@@ -19,8 +19,6 @@ const api = require("./index")(cookie, self_uid, target_uid, region);
 const selfInfo = await api.selfInfo();
 const signReward = await api.signReward();
 ```
-
-简而言之，查询他人信息时只需要 自己的 cookie 和 target_uid，并且只有玩家注册米游社后方可查询其信息
 
 ## server
 
@@ -59,6 +57,8 @@ action:{
     charDetail, // 角色详情，精确到角色装备的武器、圣遗物、命座  不需要self_uid,需要target_uid
 }
 ```
+
+简而言之，查询他人信息时只需要 自己的 cookie 和 target_uid，并且只有玩家注册米游社后方可查询其信息
 
 | 参数       | 说明                                                 |
 | ---------- | ---------------------------------------------------- |
