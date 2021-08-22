@@ -1,0 +1,33 @@
+# Copy from https://github.com/yinghualuowu/GenshinDailyHelper
+name: genshenDailyCheckin
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
+    workflow_dispatch:
+    schedule:
+        - cron: "0 22 * * *"
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js 14.x
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 14.x
+                  cache: "npm"
+
+            - name: Set time zone
+              run: sudo timedatectl set-timezone 'Asia/Shanghai'
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Run
+              env:
+                  Cookie: ${{secrets.mys_cookie}}
+              run: node ./checkin "${Cookie}"
