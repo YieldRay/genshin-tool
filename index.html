@@ -25,6 +25,23 @@
             .iu-toast {
                 z-index: 999;
             }
+            #app {
+                padding: 1em;
+            }
+            body ::-webkit-scrollbar {
+                width: 5px;
+                height: 5px;
+                background: transparent;
+            }
+            @media (min-width: 1024px) {
+                body ::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
+                }
+            }
+            body ::-webkit-scrollbar-thumb {
+                background: rgba(0, 0, 0, 0.2);
+            }
         </style>
     </head>
 
@@ -45,15 +62,17 @@
         <!--part1-->
         <div class="empty">
             <div class="empty-icon">
-                <i class="icon icon-people"></i>
+                <i class="icon icon-2x icon-search"></i>
             </div>
-            <p class="empty-title h5">genshin-tool</p>
+            <p class="empty-title h2">genshin-tool</p>
             <p class="empty-subtitle">
-                <small>{{cookie?"当前cookie为：\""+cookie+"\"":"未填写cookie，将使用服务器定义的cookie"}}</small>
+                <small>{{cookie?"cookie已填写":"未填写cookie，将使用服务器定义的cookie"}}</small>
             </p>
 
             <p>
-                请务必保护好自己的 cookie，不要在不受信任的地址输入自己的 cookie!
+                请务必保护好自己的 cookie，
+                <br />
+                不要在不受信任的地址输入自己的 cookie!
                 <br />
                 cookie获取方法见左上角Docs
                 <br />
@@ -136,6 +155,7 @@
                     </a>
                 </li>
             </ul>
+            <br />
             <!--part3 in 2-->
             <div class="card column col-8 col-xs-12">
                 <div class="card-header">
@@ -225,7 +245,7 @@
                                     <span class="text-left d-inline-block" style="font-size: 2m">
                                         {{home.comfort_level_name}}&nbsp;&nbsp;
                                     </span>
-                                    <small class="text-right d-inline-block" style="float: right">{{home.name}}</small>
+                                    <small class="text-right d-inline-block float-right">{{home.name}}</small>
                                 </div>
                                 <div class="divider" style="clear: both"></div>
                                 <div class="columns">
@@ -262,7 +282,7 @@
                                 style="background-color: DimGray; color: #fff"
                                 class="d-inline-block card column col-6 col-xs-6 p-centered text-center"
                             >
-                                <img :src="world.icon" style="float: left; width: 40%" />
+                                <img :src="world.icon" class="float-left" style="width: 40%" />
                                 <div style="display: flex; flex-direction: column; align-items: center">
                                     <strong class="d-inline-block">{{world.name}}</strong>
                                     <span class="d-inline-block">探索度：{{(world.exploration_percentage*0.1).toFixed(1)}}%</span>
@@ -281,7 +301,7 @@
                         <div class="divider"></div>
                         <details open>
                             <summary>
-                                <h3 style="display: inline">角色</h3>
+                                <h3 class="d-inline">角色</h3>
                             </summary>
                             <table class="table">
                                 <thead>
@@ -295,8 +315,8 @@
                                 </thead>
                                 <tbody v-for="char in data.avatars" :key="char.id">
                                     <tr>
-                                        <td style="display: flex; flex-direction: row; align-items: center">
-                                            <img :src="char.image" class="d-inline-block" style="width: 2em; height: 2em" />
+                                        <td>
+                                            <img :src="char.image" class="d-inline-block" style="width: 1.5em; height: 1.5em" />
                                             <span class="d-inline-block">{{char.name}}</span>
                                         </td>
                                         <td>{{char.element}}</td>
@@ -313,104 +333,121 @@
                     <!--char-detail-->
                     <template v-else-if="action==='charDetail'&&data.avatars">
                         <strong>{{(action==='charDetail')?'时装暂不支持':''}}</strong>
-                        <div v-for="char in data.avatars" :key="char.id" style="width: 100%">
-                            <img :src="char.image" style="float: left; width: 50%" />
-                            <h3>
-                                {{char.name}}
-                                <small class="label">LV{{char.level}} {{char.actived_constellation_num}}命 {{char.element}}</small>
-                            </h3>
-                            <small>好感度等级：{{char.fetter}}</small>
-                            <br />
-                            <!--武器-->
-                            <div class="popover popover-bottom">
-                                <button class="btn btn-primary btn-sm">
-                                    {{char.weapon.name}} LV{{char.weapon.level}}&nbsp;&nbsp;
-                                    <i class="icon icon-arrow-down"></i>
-                                </button>
-                                <div class="popover-container">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <img :src="char.weapon.icon" style="width: 20%" />
 
-                                            <small style="float: right">
-                                                精炼{{char.weapon.promote_level-1}}阶
-                                                <br />
-                                                {{char.weapon.type_name}}
-                                                <br />
-                                                {{'★'.repeat(char.weapon.rarity)}}
-                                            </small>
-                                        </div>
-                                        <div class="card-footer">{{char.weapon.desc}}</div>
-                                    </div>
-                                </div>
+                        <div v-for="char in data.avatars" :key="char.id" class="columns">
+                            <div class="column col-5">
+                                <img :src="char.image" style="max-width: 100%; min-height: 250px" />
                             </div>
-                            <br />
-                            <br />
-                            <!--圣遗物-->
-                            <div v-for="r in char.reliquaries" :key="r.id" class="popover popover-bottom">
-                                <button class="btn btn-primary btn-sm">
-                                    {{r.name}} +{{r.level}}&nbsp;&nbsp;
-                                    <i class="icon icon-arrow-down"></i>
-                                </button>
-                                <div class="popover-container">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <img :src="r.icon" style="width: 20%" />
+                            <div class="column col-7">
+                                <h4 class="d-inline">{{char.name}}</h4>
+                                &nbsp;
+                                <small class="label" style="font-size: 0.5em">
+                                    LV{{char.level}} {{char.actived_constellation_num}}命 {{char.element}}
+                                </small>
+                                <br />
+                                <small>好感度等级：{{char.fetter}}&nbsp;&nbsp;</small>
+                                <!--武器-->
+                                <div class="popover popover-bottom">
+                                    <button class="btn btn-sm">
+                                        {{char.weapon.name}} LV{{char.weapon.level}}&nbsp;&nbsp;
+                                        <i class="icon icon-arrow-down"></i>
+                                    </button>
+                                    <div class="popover-container">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <img :src="char.weapon.icon" style="width: 20%; border: #000 solid 1px" />
 
-                                            <small style="float: right">
-                                                {{r.set.name}}
-                                                <br />
-                                                {{r.pos_name}}
-                                                <br />
-                                                {{'★'.repeat(r.rarity)}}
-                                            </small>
-                                        </div>
-                                        <div class="card-footer">
-                                            {{r.set.name}}：
-                                            <br />
-                                            <i v-for="a in r.set.affixes" :key="a.activation_number">
-                                                {{a.activation_number}}件套：{{a.effect}}
-                                            </i>
+                                                <small class="float-right">
+                                                    精炼{{char.weapon.promote_level}}阶
+                                                    <br />
+                                                    {{char.weapon.type_name}}
+                                                    <br />
+                                                    {{'★'.repeat(char.weapon.rarity)}}
+                                                </small>
+                                            </div>
+                                            <div class="card-footer">{{char.weapon.desc}}</div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <br />
-                            <br />
-                            <!--命座-->
-                            <div v-for="c in char.constellations" class="popover popover-top">
-                                <button class="btn btn-primary btn-sm" :class="{ disabled: !c.is_actived }">
-                                    {{c.pos}}&nbsp;
-                                    <i class="icon icon-arrow-up"></i>
-                                </button>
-                                <div class="popover-container">
-                                    <div class="card" style="background-color: DimGray; color: #fff">
-                                        <div class="card-body">
-                                            <img :src="c.icon" style="width: 20%" />
+                                <br />
+                                <!--圣遗物-->
+                                <div v-for="r in char.reliquaries" :key="r.id" class="popover popover-bottom" style="display: block">
+                                    <button class="btn btn-primary btn-sm text-tiny">
+                                        {{r.name}}
+                                        <i>+{{r.level}}</i>
+                                        &nbsp;&nbsp;
+                                        <i class="icon icon-arrow-down"></i>
+                                    </button>
+                                    <div class="popover-container">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <img :src="r.icon" style="width: 20%; border: #000 solid 1px" />
 
-                                            <span class="text-large" style="float: right">{{c.name}}</span>
-                                            <div
-                                                class="card-footer text-small"
-                                                v-html="c.effect.replace(/\\n/g,'<br />')"
-                                                style="float: right"
-                                            ></div>
+                                                <small class="float-right">
+                                                    {{r.set.name}}
+                                                    <br />
+                                                    {{r.pos_name}}
+                                                    <br />
+                                                    {{'★'.repeat(r.rarity)}}
+                                                </small>
+                                            </div>
+                                            <div class="card-footer">
+                                                {{r.set.name}}：
+                                                <br />
+                                                <p v-for="a in r.set.affixes" :key="a.activation_number">
+                                                    <strong>{{a.activation_number}}件套：</strong>
+                                                    <i>{{a.effect}}</i>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <br />
+                                <!--命座-->
+                                <div v-for="c in char.constellations" class="popover popover-top">
+                                    <button
+                                        class="btn btn-primary btn-sm btn-action s-circle"
+                                        :class="{ disabled: !c.is_actived }"
+                                        style="margin-right: 1px"
+                                    >
+                                        {{c.pos}}
+                                    </button>
+
+                                    <div class="popover-container">
+                                        <div class="card" style="background-color: DimGray; color: #fff">
+                                            <div class="card-body">
+                                                <img :src="c.icon" style="width: 20%" />
+
+                                                <span class="text-large float-right">{{c.name}}</span>
+                                                <div
+                                                    class="card-footer text-small float-right"
+                                                    v-html="c.effect.replace(/\\n/g,'<br />')"
+                                                ></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--结束-->
                             </div>
-                            <!--结束-->
-                            <div class="divider" style="clear: both"></div>
+                            <div class="divider"></div>
                         </div>
                     </template>
                     <!--char-detail-->
                     <!--spiral-abyss-->
                     <template v-else-if="action==='spiralAbyss1'||action==='spiralAbyss2'">
-                        <h3 class="d-inline">深境螺旋战绩</h3>
-                        <span class="label text-tiny">
-                            统计周期{{new Date(data.start_time*1000).toLocaleDateString()}} - {{new
-                            Date(data.end_time*1000).toLocaleDateString()}}
-                        </span>
-                        <div class="panel m-2 bg-secondary">
+                        <h3>
+                            深境螺旋战绩
+                            <small v-if="data.start_time" class="label text-tiny">
+                                统计周期{{new Date(data.start_time*1000).toLocaleDateString()}} - {{new
+                                Date(data.end_time*1000).toLocaleDateString()}}
+                            </small>
+                        </h3>
+                        <template v-if="data.total_battle_times === 0">
+                            <div class="card p-2 m-2">
+                                <span class="text-large text-center">未挑战</span>
+                            </div>
+                        </template>
+                        <div v-if="data.total_battle_times > 0" class="panel m-2 bg-secondary">
                             <div class="panel-header">
                                 <div class="panel-title text-center">挑战回顾</div>
                             </div>
