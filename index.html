@@ -38,7 +38,7 @@
 
             .inline-forms * {
                 display: inline;
-                max-width: 55%;
+                max-width: 60%;
             }
 
             .iu-toast {
@@ -71,7 +71,7 @@
                 <a href="https://github.com/Crazy-White/genshin-tool" class="btn btn-link">GitHub</a>
             </section>
             <section class="navbar-center">
-                <i class="icon icon-search"></i>
+                <a href="./"><i class="icon icon-search"></i></a>
             </section>
             <section class="navbar-section">
                 <a onclick="$server.classList.add('active')" class="btn btn-link">Server</a>
@@ -79,7 +79,7 @@
             </section>
         </header>
         <!--part1-->
-        <div class="empty">
+        <div class="empty" style="margin-bottom: 0.5em">
             <div class="empty-icon">
                 <i class="icon icon-2x icon-search"></i>
             </div>
@@ -141,14 +141,18 @@
                         <option value="cn_qd01">渠道服</option>
                     </select>
                     &nbsp;
-                    <button
-                        onclick="localStorage.setItem('history','[]');app.history=[];iToast.success('已删除历史记录')"
-                        class="btn btn-action s-circle btn-primary"
-                    >
-                        ╳
-                    </button>
                 </div>
-                历史记录：{{history}}
+                历史记录：
+                <template v-for="uid in history">
+                    <a @click="target_uid=uid">{{uid}}</a>
+                    &nbsp;
+                </template>
+                <button
+                    onclick="localStorage.setItem('history','[]');app.history=[];iToast.success('已删除历史记录')"
+                    class="btn btn-sm btn-action s-circle btn-primary"
+                >
+                    ╳
+                </button>
                 <li class="menu-item">
                     <a @click="doAction('gameInfo')">
                         <i class="icon icon-flag"></i>
@@ -299,7 +303,7 @@
                                 v-for="world in data.world_explorations"
                                 :key="world.id"
                                 style="background-color: DimGray; color: #fff"
-                                class="d-inline-block card column col-6 col-xs-6 p-centered text-center"
+                                class="d-inline-block card column col-6 col-xs-12 p-centered text-center"
                             >
                                 <img :src="world.icon" class="float-left" style="width: 40%" />
                                 <div style="display: flex; flex-direction: column; align-items: center">
@@ -338,7 +342,7 @@
                                             <img :src="char.image" class="d-inline-block" style="width: 1.5em; height: 1.5em" />
                                             <span class="d-inline-block">{{char.name}}</span>
                                         </td>
-                                        <td>{{char.element}}</td>
+                                        <td>{{translate(char.element)}}</td>
                                         <td>{{'★'.repeat(char.rarity)}}</td>
                                         <td>{{char.actived_constellation_num}}</td>
                                         <td>{{char.fetter}}</td>
@@ -361,7 +365,7 @@
                                 <h4 class="d-inline">{{char.name}}</h4>
                                 &nbsp;
                                 <small class="label" style="font-size: 0.5em">
-                                    LV{{char.level}} {{char.actived_constellation_num}}命 {{char.element}}
+                                    LV{{char.level}} {{char.actived_constellation_num}}命 {{translate(char.element)}}
                                 </small>
                                 <br />
                                 <small>好感度等级：{{char.fetter}}&nbsp;&nbsp;</small>
@@ -411,12 +415,12 @@
                                                 </small>
                                             </div>
                                             <div class="card-footer">
-                                                {{r.set.name}}：
-                                                <br />
-                                                <p v-for="a in r.set.affixes" :key="a.activation_number">
+                                                <p>{{r.set.name}}：</p>
+                                                <span v-for="a in r.set.affixes" :key="a.activation_number">
                                                     <strong>{{a.activation_number}}件套：</strong>
                                                     <i>{{a.effect}}</i>
-                                                </p>
+                                                    <br />
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -577,7 +581,7 @@
                     <template v-else-if="action==='signReward'">
                         <h3>{{data.month}}月签到奖励</h3>
                         <div class="columns text-center">
-                            <figure v-for="(award,i) in data.awards" class="figure s-rounded column col-xs-3 col-2 card" style="padding: 0">
+                            <figure v-for="(award,i) in data.awards" class="figure s-rounded column col-xs-4 col-2 card" style="padding: 0">
                                 <img class="img-responsive" :src="award.icon" />
                                 <span class="text-tiny">{{award.name}} ×{{award.cnt}}</span>
                                 <figcaption class="figure-caption bg-gray">第{{++i}}天</figcaption>
@@ -769,7 +773,7 @@
                 },
                 doAction(action) {
                     if (["gameInfo", "charDetail", "spiralAbyss1", "spiralAbyss2"].includes(action)) {
-                        const len = String(this.target_uid).length;
+                        const len = this.target_uid ? String(this.target_uid).length : 0;
                         if (len !== 9) {
                             iToast.fail(`uid是9位数\n输入了${len}位数`);
                             return;
@@ -788,6 +792,15 @@
                 saveCookie(event) {
                     localStorage.setItem("cookie", this.cookie);
                     iToast.success("保存成功");
+                },
+                translate(raw) {
+                    return raw
+                        .replace("Anemo", "风")
+                        .replace("Geo", "岩")
+                        .replace("Hydro", "水")
+                        .replace("Pyro", "火")
+                        .replace("Cryo", "冰")
+                        .replace("Electro", "雷");
                 },
             },
             mounted() {
