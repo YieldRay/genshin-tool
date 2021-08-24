@@ -10,8 +10,27 @@
         <link href="https://cdn.jsdelivr.net/gh/picturepan2/spectre@0.5.9/dist/spectre-exp.min.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/gh/picturepan2/icons.css/dist/icons.min.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/iu-toast@1.1.2/dist/iu-toast.min.css" rel="stylesheet" />
-        <script src="https://cdn.jsdelivr.net/npm/vue@3.2.4"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@3.2.4/dist/vue.global.prod.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/iu-toast@1.1.2/dist/iu-toast.min.js"></script>
+        <script>
+            $router = Object.create(null);
+            Object.defineProperty($router, "path", {
+                get() {
+                    return location.hash.slice(2).replace(/\/{2,}/g, "/");
+                },
+                set(str) {
+                    location.hash = "/" + str.replace(/\/{2,}/g, "/");
+                },
+            });
+            Object.defineProperty($router, "array", {
+                get() {
+                    return this.path.split("/");
+                },
+                set(arr) {
+                    this.path = arr.join("/");
+                },
+            });
+        </script>
         <style>
             * {
                 word-break: break-all;
@@ -696,6 +715,7 @@
                         resp = await resp.json();
                         if (resp.success) {
                             iToast.success("请求成功");
+                            $router.array = [this.action, this.target_uid];
                             this.data = resp.data;
                             return resp.data;
                         } else {
@@ -737,7 +757,7 @@
                         localStorage.setItem("history", "[]");
                     }
                     history = JSON.parse(localStorage.getItem("history"));
-                    if (history.includes(uid) || uid === "") {
+                    if (history.includes(uid) || !uid || uid.length !== 9) {
                         return false;
                     } else {
                         history.push(uid);
@@ -776,6 +796,9 @@
                 if (localStorage.getItem("checkin_server")) this.checkin_server = localStorage.getItem("checkin_server");
                 if (localStorage.getItem("cookie")) this.cookie = localStorage.getItem("cookie");
                 if (localStorage.getItem("history")) this.history = this.getHistory();
+                const [action, uid] = $router.array;
+                this.target_uid = uid;
+                if (["gameInfo", "charDetail", "spiralAbyss1", "spiralAbyss2"].includes(action)) this.doAction(action);
             },
         }).mount("#app");
     </script>

@@ -1,4 +1,4 @@
-# Copy from https://github.com/yinghualuowu/GenshinDailyHelper
+# Originate from https://github.com/yinghualuowu/GenshinDailyHelper [MIT]
 name: genshenDailyCheckin
 
 on:

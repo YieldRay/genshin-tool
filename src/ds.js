@@ -1,3 +1,4 @@
+// Originate from https://github.com/Tsuk1ko/genshin-mys-checkin/blob/main/src/mys/ds.js [MIT]
 const md5 = require("md5");
 const { generate } = require("randomstring");
 const { stringify } = require("qs");

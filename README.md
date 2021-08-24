@@ -105,7 +105,7 @@ $ node checkin "['cookie1','cookie2']"
 ### Github Action
 
 代码抄的<https://github.com/yinghualuowu/GenshinDailyHelper>  
-workflow 加后缀.yml，secrets 中的 `mys_cookie` 填写米游社 cookie，支持数组
+workflow 添加后缀.yml，secrets 中的 `mys_cookie` 填写米游社 cookie，多账号时按照格式`['cookie1','cookie2']`填写
 
 ## 其他
 
