@@ -38,7 +38,7 @@ async function checkin(cookie) {
         api = require("./src/main")(cookie);
         const selfInfo = await api.selfInfo();
         const { region, region_name, game_uid, nickname, level } = selfInfo.list[0];
-        arr.push(log(`区域 ${region_name} | uid ${game_uid} | 昵称 ${nickname} | 等级 ${level}`));
+        arr.push(log(`区域 ${region_name} |  昵称 ${nickname} | 等级 ${level}`)); // uid ${game_uid}
         api = require("./src/main")(cookie, game_uid, null, region);
         const signInfo = await api.signInfo();
         const { is_sign, total_sign_day, today } = signInfo;

@@ -719,7 +719,8 @@
                         resp = await resp.json();
                         if (resp.success) {
                             iToast.success("请求成功");
-                            $router.array = [this.action, this.target_uid];
+                            if (["gameInfo", "charDetail", "spiralAbyss1", "spiralAbyss2"].includes(this.action))
+                                $router.array = [this.action, this.target_uid];
                             this.data = resp.data;
                             return resp.data;
                         } else {
@@ -761,7 +762,7 @@
                         localStorage.setItem("history", "[]");
                     }
                     history = JSON.parse(localStorage.getItem("history"));
-                    if (history.includes(uid) || !uid || uid.length !== 9) {
+                    if (history.includes(uid) || !uid || String(uid).length !== 9) {
                         return false;
                     } else {
                         history.push(uid);

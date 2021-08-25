@@ -39,7 +39,7 @@ const signReward = await api.signReward();
 支持 GET 和 POST 请求
 为了保护cookie，建议只使用 POST
 example:
-GET  http://localhost/?self_uid=...&target_uid=...&cookie=...&action=...
+GET  http://localhost/api?self_uid=...&target_uid=...&cookie=...&action=...
 POST  http://localhost/   -j-s-o-n->   body = { self_uid: '', target_uid: '', cookie='', action='' }
 
 
@@ -89,7 +89,8 @@ $ node server "米游社cookie"
 
 ### API 形式
 
-部署到 vercel 后，访问 https://?.vecel.app/api/chechin?cookie=...  
+部署到 vercel 时 ，访问 https://?.vecel.app/api/chechin?cookie=...  
+本地部署时，访问 http://localhost/api/chechin?cookie=...  
 若填写了环境变量`mys_cookie`，直接访问 https://?.vecel.app/api/chechin  
 实例：<https://genshin-tool.vercel.app/api/checkin>
 

@@ -1,6 +1,6 @@
 module.exports = async (req, res) => {
-    if (process.env.acao) res.setHeader("Access-Control-Allow-Origin", process.env.acao);
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    const data = { time: new Date().getTime() };
     switch (
         req.method // 判断请求类型，并统一得到query，然后调用writeResp
     ) {
