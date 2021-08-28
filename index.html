@@ -45,7 +45,7 @@
                 z-index: 999;
             }
             #app {
-                padding: 1em;
+                padding: 1rem;
             }
             body ::-webkit-scrollbar {
                 width: 5px;
@@ -67,8 +67,8 @@
     <body class="container grid-lg" id="app">
         <header class="navbar">
             <section class="navbar-section">
-                <a href="https://github.com/Crazy-White/genshin-tool#readme" class="btn btn-link">Docs</a>
-                <a href="https://github.com/Crazy-White/genshin-tool" class="btn btn-link">GitHub</a>
+                <a href="https://github.com/yieldray/genshin-tool#readme" class="btn btn-link">Docs</a>
+                <a href="https://github.com/yieldray/genshin-tool" class="btn btn-link">GitHub</a>
             </section>
             <section class="navbar-center">
                 <a href="./"><i class="icon icon-search"></i></a>
@@ -79,7 +79,7 @@
             </section>
         </header>
         <!--part1-->
-        <div class="empty" style="margin-bottom: 0.5em">
+        <div class="empty" style="margin-bottom: 0.5rem">
             <div class="empty-icon">
                 <i class="icon icon-2x icon-search"></i>
             </div>
@@ -264,8 +264,8 @@
                                     <img :src="home.icon" class="img-responsive" />
                                 </div>
                                 <div class="card-body" style="display: flex; flex-direction: row; align-items: center">
-                                    <img class="d-inline-block" style="width: 2em" :src="home.comfort_level_icon" />
-                                    <span class="text-left d-inline-block" style="font-size: 2m">
+                                    <img class="d-inline-block" style="width: 2rem" :src="home.comfort_level_icon" />
+                                    <span class="text-left d-inline-block" style="font-size: .5rem">
                                         {{home.comfort_level_name}}&nbsp;&nbsp;
                                     </span>
                                     <small class="text-right d-inline-block float-right">{{home.name}}</small>
@@ -339,7 +339,7 @@
                                 <tbody v-for="char in data.avatars" :key="char.id">
                                     <tr>
                                         <td>
-                                            <img :src="char.image" class="d-inline-block" style="width: 1.5em; height: 1.5em" />
+                                            <img :src="char.image" class="d-inline-block" style="width: 1.5rem; height: 1.5rem" />
                                             <span class="d-inline-block">{{char.name}}</span>
                                         </td>
                                         <td>{{translate(char.element)}}</td>
@@ -364,7 +364,7 @@
                             <div class="column col-7">
                                 <h4 class="d-inline">{{char.name}}</h4>
                                 &nbsp;
-                                <small class="label" style="font-size: 0.5em">
+                                <small class="label" style="font-size: 0.5rem">
                                     LV{{char.level}} {{char.actived_constellation_num}}命 {{translate(char.element)}}
                                 </small>
                                 <br />
@@ -571,7 +571,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <summary style="padding-left: 4em">展开</summary>
+                                    <summary style="padding-left: 4rem">展开</summary>
                                 </details>
                             </div>
                         </div>
