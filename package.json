@@ -4,10 +4,8 @@
   "description": "",
   "private": true,
   "dependencies": {
-    "md5": "^2.3.0",
-    "qs": "^6.10.1",
     "node-fetch": "^2.6.1",
-    "randomstring": "^1.2.1"
+    "qs": "^6.10.1"
   },
   "devDependencies": {},
   "scripts": {

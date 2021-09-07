@@ -12,34 +12,38 @@ module.exports = function (cookie = null, self_uid = null, target_uid = null, re
     if (self_uid && isNaN(Number(target_uid))) throw new Error("target_uid  must be able to be resolved to a number");
 
     // main
-    async function req(url, isPOST = false, cb = e => e) {
+    async function req(url, isPOST = false, bodyReplacer) {
         try {
-            const resp = await fetch(
-                url,
-                cb({
-                    headers: {
-                        "user-agent":
-                            "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) miHoYoBBS/2.10.0",
-                        origin: "https://webstatic.mihoyo.com",
-                        referer: `https://webstatic.mihoyo.com/bbs/event/signin-ys/index.html?bbs_auth_required=true&act_id=${act_id}&utm_source=bbs&utm_medium=mys&utm_campaign=icon`,
-                        accept: "application/json, text/plain, */*",
-                        host: "api-takumi.mihoyo.com",
-                        cookie,
-                        "content-type": "application/json;charset=utf-8",
-                        "x-rpc-device_id": "94581081EDD446EFAA3A45B8CC636CCF",
-                        "x-rpc-client_type": "5",
-                        "x-rpc-app_version": "2.10.0",
-                        ds: require("./ds")(),
-                    },
-                    method: isPOST ? "POST" : "GET",
-                    body: isPOST ? JSON.stringify({ act_id, uid: self_uid, region }) : null,
-                }),
-            );
+            bodyReplacer = bodyReplacer ? bodyReplacer : JSON.stringify({ act_id, uid: self_uid, region });
+            const body = isPOST ? bodyReplacer : null;
+            const hoyolabVersion = "2.11.1";
+            const resp = await fetch(url, {
+                method: isPOST ? "POST" : "GET",
+                body,
+                headers: {
+                    "user-agent": `Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/${hoyolabVersion}`,
+                    origin: "https://webstatic.mihoyo.com",
+                    referer: "https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6",
+                    "Accept-Encoding": "gzip, deflate",
+                    "Accept-Language": "zh-CN,en-US;q=0.8",
+                    "X-Requested-With": "com.mihoyo.hyperion",
+                    Accept: "application/json, text/plain, */*",
+                    host: "api-takumi.mihoyo.com",
+                    cookie,
+                    "content-type": "application/json;charset=utf-8",
+                    "x-rpc-device_id": "94581081EDD446EFAA3A45B8CC636CCF",
+                    "x-rpc-client_type": "5",
+                    "x-rpc-app_version": hoyolabVersion,
+                    ds: require("./ds")(url, body),
+                },
+            });
             const result = await resp.json();
-            if (result.data === null && result.message) throw new Error(result.message);
+            //console.log(result);
+            if (!result.data) throw new Error(result.message);
             if (result.retcode !== 0) throw new Error(JSON.stringify(result));
             return result.data;
         } catch (e) {
+            console.error(e);
             throw e;
         }
     }
@@ -105,14 +109,14 @@ module.exports = function (cookie = null, self_uid = null, target_uid = null, re
     // 获取指定玩家游戏的进度信息
     const gameInfo = async () => {
         thrower([target_uid, "target_uid"]);
-        return await req.get(`https://api-takumi.mihoyo.com/game_record/genshin/api/index?role_id=${target_uid}&server=${region}`);
+        return await req.get(`https://api-takumi.mihoyo.com/game_record/app/genshin/api/index?role_id=${target_uid}&server=${region}`);
     };
 
     // 本期深渊
     const spiralAbyss1 = async () => {
         thrower([target_uid, "target_uid"]);
         return await req.get(
-            `https://api-takumi.mihoyo.com/game_record/genshin/api/spiralAbyss?schedule_type=1&server=${region}&role_id=${target_uid}`,
+            `https://api-takumi.mihoyo.com/game_record/app/genshin/api/spiralAbyss?schedule_type=1&server=${region}&role_id=${target_uid}`,
         );
     };
 
@@ -120,23 +124,18 @@ module.exports = function (cookie = null, self_uid = null, target_uid = null, re
     const spiralAbyss2 = async () => {
         thrower([target_uid, "target_uid"]);
         return await req.get(
-            `https://api-takumi.mihoyo.com/game_record/genshin/api/spiralAbyss?schedule_type=2&server=${region}&role_id=${target_uid}`,
+            `https://api-takumi.mihoyo.com/game_record/app/genshin/api/spiralAbyss?schedule_type=2&server=${region}&role_id=${target_uid}`,
         );
     };
 
     // 角色详情
-    const charDetail = async () => {
+    const charDetail = async function () {
         thrower([target_uid, "target_uid"]);
-        const query = await gameInfo();
-        const char_ids = [];
-        query.avatars.forEach(e => char_ids.push(e.id));
+        const gameinfo = await gameInfo();
         return await req(
-            `https://api-takumi.mihoyo.com/game_record/genshin/api/character?server=${region}&role_id=${target_uid}`,
+            `https://api-takumi.mihoyo.com/game_record/app/genshin/api/character`,
             true,
-            e => {
-                e.body = `{"character_ids":${JSON.stringify(char_ids)}}`;
-                return e;
-            },
+            JSON.stringify({ character_ids: gameinfo.avatars.map(item => item.id), role_id: target_uid, server: region }),
         );
     };
 
