@@ -1,5 +1,5 @@
 // node checkin "cookie"
-// node checkin "['cookie1', 'cookie2', ...]"
+// node checkin '["cookie1", "cookie2", ...]'
 
 const allCookie = process.argv.slice(2)[0] ? process.argv.slice(2)[0] : process.env.mys_cookie;
 

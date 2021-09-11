@@ -12,7 +12,7 @@ module.exports = function (cookie = null, self_uid = null, target_uid = null, re
     if (self_uid && isNaN(Number(target_uid))) throw new Error("target_uid  must be able to be resolved to a number");
 
     // main
-    async function req(url, isPOST = false, bodyReplacer) {
+    async function req(url, isPOST = false, bodyReplacer, isOldDS = false) {
         try {
             bodyReplacer = bodyReplacer ? bodyReplacer : JSON.stringify({ act_id, uid: self_uid, region });
             const body = isPOST ? bodyReplacer : null;
@@ -34,7 +34,7 @@ module.exports = function (cookie = null, self_uid = null, target_uid = null, re
                     "x-rpc-device_id": "94581081EDD446EFAA3A45B8CC636CCF",
                     "x-rpc-client_type": "5",
                     "x-rpc-app_version": hoyolabVersion,
-                    ds: require("./ds")(url, body),
+                    ds: isOldDS ? require("./_ds") : require("./ds")(url, body),
                 },
             });
             const result = await resp.json();
@@ -58,7 +58,7 @@ module.exports = function (cookie = null, self_uid = null, target_uid = null, re
 
     req.post = async url => {
         try {
-            return await req(url, true);
+            return await req(url, true, false, true);
         } catch (e) {
             throw e;
         }
