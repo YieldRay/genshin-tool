@@ -12,7 +12,7 @@ module.exports = function (cookie = null, self_uid = null, target_uid = null, re
     if (self_uid && isNaN(Number(target_uid))) throw new Error("target_uid  must be able to be resolved to a number");
 
     // main
-    async function req(url, isPOST = false, bodyReplacer, isOldDS = false) {
+    async function req(url, isPOST = false, bodyReplacer) {
         try {
             bodyReplacer = bodyReplacer ? bodyReplacer : JSON.stringify({ act_id, uid: self_uid, region });
             const body = isPOST ? bodyReplacer : null;
@@ -24,17 +24,17 @@ module.exports = function (cookie = null, self_uid = null, target_uid = null, re
                     "user-agent": `Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/${hoyolabVersion}`,
                     origin: "https://webstatic.mihoyo.com",
                     referer: "https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6",
-                    "Accept-Encoding": "gzip, deflate",
-                    "Accept-Language": "zh-CN,en-US;q=0.8",
-                    "X-Requested-With": "com.mihoyo.hyperion",
-                    Accept: "application/json, text/plain, */*",
-                    host: "api-takumi.mihoyo.com",
-                    cookie,
+                    "accept-encoding": "gzip, deflate",
+                    "accept-language": "zh-CN,en-US;q=0.8",
                     "content-type": "application/json;charset=utf-8",
+                    "x-requested-with": "com.mihoyo.hyperion",
                     "x-rpc-device_id": "94581081EDD446EFAA3A45B8CC636CCF",
                     "x-rpc-client_type": "5",
                     "x-rpc-app_version": hoyolabVersion,
-                    ds: isOldDS ? require("./_ds") : require("./ds")(url, body),
+                    accept: "application/json, text/plain, */*",
+                    host: "api-takumi.mihoyo.com",
+                    cookie,
+                    ds: require("./ds")(url, body),
                 },
             });
             const result = await resp.json();
@@ -58,7 +58,7 @@ module.exports = function (cookie = null, self_uid = null, target_uid = null, re
 
     req.post = async url => {
         try {
-            return await req(url, true, false, true);
+            return await require("./oldCheckIn")(url, cookie, act_id, self_uid, region);
         } catch (e) {
             throw e;
         }

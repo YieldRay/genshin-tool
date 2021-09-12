@@ -1,4 +1,5 @@
 # Originate from https://github.com/yinghualuowu/GenshinDailyHelper [MIT]
+# Add the suffix .yml to enable it
 name: genshenDailyCheckin
 
 on:

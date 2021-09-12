@@ -18,6 +18,7 @@
 const api = require("./index")(cookie, self_uid, target_uid, region);
 const selfInfo = await api.selfInfo();
 const signReward = await api.signReward();
+console.log(signReward);
 ```
 
 ## server
@@ -87,6 +88,13 @@ $ node server "米游社cookie"
 
 ## 签到
 
+### module
+
+```js
+const result = await require("./src/sign")(cookie);
+console.log(result);
+```
+
 ### API 形式
 
 部署到 vercel 时 ，访问 https://?.vecel.app/api/chechin?cookie=...  
@@ -100,13 +108,13 @@ $ node server "米游社cookie"
 $ npm install
 $ node checkin "填写cookie"
 # 多账号
-$ node checkin "['cookie1','cookie2']"
+$ node checkin '["cookie1", "cookie2"]'
 ```
 
 ### Github Action
 
 代码抄的<https://github.com/yinghualuowu/GenshinDailyHelper>  
-workflow 添加后缀.yml，secrets 中的 `mys_cookie` 填写米游社 cookie，多账号时按照格式`['cookie1','cookie2']`填写
+workflow 添加后缀.yml，secrets 中的 `mys_cookie` 填写米游社 cookie，多账号时按照格式`["cookie1","cookie2"]`填写
 
 ## 其他
 
