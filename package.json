@@ -4,15 +4,17 @@
   "description": "",
   "private": true,
   "dependencies": {
+    "html-minifier-terser": "^6.0.2",
     "md5": "^2.3.0",
     "node-fetch": "^2.6.1",
     "qs": "^6.10.1"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "node server",
+    "build": "mkdir public && npx html-minifier-terser --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true -o ./public/index.html index.html",
+    "start": "npm run compress && node server"
   },
-  "author": "CrazyWhite",
+  "author": "YieldRay",
   "license": "ISC"
 }

@@ -8,6 +8,7 @@ const port = 80;
 /* 请求 /checkin 返回签到接口 */
 const http = require("http");
 const qs = require("qs");
+const fs = require("fs");
 const thrower = require("./src/thrower");
 if (process.argv.slice(2)[0]) process.env.mys_cookie = process.argv.slice(2)[0];
 const server = http.createServer(httpConfig);
@@ -25,7 +26,7 @@ server.on("clientError", (err, socket) => {
 async function httpConfig(req, res) {
     if (req.url === "/" || req.url === "index.htm" || req.url === "index.html") {
         res.setHeader("Content-Type", "text/html; charset=utf-8");
-        res.end(require("fs").readFileSync("./index.html"));
+        res.end(fs.existsSync("./public/index.html") ? fs.readFileSync("./public/index.html") : fs.readFileSync("./index.html"));
         return;
     }
     if (req.url.startsWith("/api")) {

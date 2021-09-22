@@ -81,7 +81,7 @@ $ node server "米游社cookie"
 
 ### 部署到 Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FCrazy-White%2Fgenshin-tool&env=mys_cookie,acao&envDescription=mys_cookie(%E5%8F%AF%E9%80%89)%3A%20%E7%B1%B3%E6%B8%B8%E7%A4%BEcookie%20%20%7C%20%20acao(%E5%8F%AF%E9%80%89)%3A%20%E8%AE%BE%E7%BD%AE%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%91%E9%80%81%E7%9A%84Access-Control-Allow-Origin%E7%9A%84%E5%80%BC%20&demo-url=https%3A%2F%2Fgenshin-tool.vercel.app%2Fapi>)  
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYieldRay%2Fgenshin-tool&env=mys_cookie,acao&demo-title=Genshin-Tool&demo-url=https%3A%2F%2Fgenshin-tool.vercel.app%2F)
 可选环境变量 `mys_cookie` ，其值应为米游社 cookie  
 可选环境变量`acao`,设置服务器发送的 Access-Control-Allow-Origin 的值  
 实例：<https://genshin-tool.vercel.app/api?action=gameInfo&target_uid=100000100>

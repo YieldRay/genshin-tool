@@ -13,6 +13,7 @@
         <script src="https://cdn.jsdelivr.net/npm/vue@3.2.4/dist/vue.global.prod.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/iu-toast@1.1.2/dist/iu-toast.min.js"></script>
         <script>
+            // hashRouter mini version
             $router = Object.create(null);
             Object.defineProperty($router, "path", {
                 get() {
@@ -381,7 +382,7 @@
                                                 <img :src="char.weapon.icon" style="width: 20%; border: #000 solid 1px" />
 
                                                 <small class="float-right">
-                                                    精炼{{char.weapon.promote_level}}阶
+                                                    精炼{{char.weapon.promote_level===0?1:char.weapon.promote_level-1}}阶
                                                     <br />
                                                     {{char.weapon.type_name}}
                                                     <br />
