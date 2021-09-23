@@ -382,7 +382,7 @@
                                                 <img :src="char.weapon.icon" style="width: 20%; border: #000 solid 1px" />
 
                                                 <small class="float-right">
-                                                    精炼{{char.weapon.promote_level===0?1:char.weapon.promote_level-1}}阶
+                                                    精炼{{char.weapon.affix_level?char.weapon.affix_level:1}}阶
                                                     <br />
                                                     {{char.weapon.type_name}}
                                                     <br />
