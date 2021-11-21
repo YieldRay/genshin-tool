@@ -1,5 +1,7 @@
 # genshin-tool
 
+## _此项目的前端界面已不再维护，移步<https://github.com/YieldRay/genshin-info-query>_
+
 ## _请务必保护好自己的 cookie，不要在不受信任的地址输入自己的 cookie。泄露 cookie 可能使你的账号遭到风险！_
 
 预览：<https://genshin-tool.vercel.app/>
