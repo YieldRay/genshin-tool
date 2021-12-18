@@ -10,9 +10,26 @@
 
 登录[米游社](https://bbs.mihoyo.com/ys/)后，在地址栏输入 `javascript:alert(document.cookie)` 弹出窗口内显示 cookie
 
-![step1](https://i.w3tt.com/2021/08/21/q6gH1.png)
+![step1](https://i0.wp.com/s2.loli.net/2021/12/18/z9t5BrOfJlTmk8K.png)
 
-![step2](https://i.w3tt.com/2021/08/21/q6y1G.png)
+![step2](https://i0.wp.com/s2.loli.net/2021/12/18/LmTO4vokepJIV7d.png)
+
+### 部署到 Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYieldRay%2Fgenshin-tool&env=mys_cookie,acao&demo-title=Genshin-Tool&demo-url=https%3A%2F%2Fgenshin-tool.vercel.app%2F)  
+可选环境变量 `mys_cookie`，其值应为米游社 cookie  
+可选环境变量 `acao`，设置服务器发送的 Access-Control-Allow-Origin 的值，填入`*`即可  
+实例：<https://genshin-tool.vercel.app/api?action=gameInfo&target_uid=100000100>
+
+### 本地部署
+
+```sh
+$ npm install
+$ node server
+# 设置默认cookie
+$ node server "米游社cookie"
+
+```
 
 ## module
 
@@ -71,23 +88,6 @@ action:{
 | region     | 游戏服务器，默认为 cn_gf01(国服)，可选 cn_qd01(渠道) |
 | action     | 请求的方法名，上文已述                               |
 
-### 本地部署
-
-```sh
-$ npm install
-$ node server
-# 设置默认cookie
-$ node server "米游社cookie"
-
-```
-
-### 部署到 Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYieldRay%2Fgenshin-tool&env=mys_cookie,acao&demo-title=Genshin-Tool&demo-url=https%3A%2F%2Fgenshin-tool.vercel.app%2F)
-可选环境变量 `mys_cookie` ，其值应为米游社 cookie  
-可选环境变量`acao`,设置服务器发送的 Access-Control-Allow-Origin 的值  
-实例：<https://genshin-tool.vercel.app/api?action=gameInfo&target_uid=100000100>
-
 ## 签到
 
 ### module
@@ -99,9 +99,9 @@ console.log(result);
 
 ### API 形式
 
-部署到 vercel 时 ，访问 https://?.vecel.app/api/chechin?cookie=...  
+部署到 vercel 时 ，访问 https://genshin-tool.vercel.app/api/chechin?cookie=...  
 本地部署时，访问 http://localhost/api/chechin?cookie=...  
-若填写了环境变量`mys_cookie`，直接访问 https://?.vecel.app/api/chechin  
+若填写了环境变量`mys_cookie`，直接访问 https://genshin-tool.vercel.app/api/chechin  
 实例：<https://genshin-tool.vercel.app/api/checkin>
 
 ### CLI 形式
@@ -121,7 +121,7 @@ workflow 添加后缀.yml，secrets 中的 `mys_cookie` 填写米游社 cookie�
 ## 其他
 
 Vercel 环境变量
-![vercel](https://i.w3tt.com/2021/08/21/q6JxD.png)
+![vercel](https://i0.wp.com/s2.loli.net/2021/12/18/9uUWb6CMPdp4vtZ.png)
 
 ```js
 const url = "https://genshin-tool.vercel.app/api";
